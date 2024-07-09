@@ -6,22 +6,33 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myprofile.databinding.UserBlogBinding
+import com.squareup.picasso.Picasso
 
 class ProfilesAdapter (var userBlog : List<Profile>):
 RecyclerView.Adapter<ProfilesViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfilesViewHolder {
-        var itemView = LayoutInflater.from(parent.context).inflate(R.layout.user_blog,parent,false)
-        return  ProfilesViewHolder(itemView)
+        val binding = UserBlogBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+        return  ProfilesViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ProfilesViewHolder, position: Int) {
         val profile = userBlog[position]
-        holder.tvAuthor.text = profile.author
-        holder.tvTitle.text = profile.title
-        holder.tvPreview.text = profile.articlePreview
-        holder.tvPublish.text = profile.publishingDate
-        holder.tvSeeMore.text = profile.viewFullPost
+        holder.binding.tvAuthor.text = profile.author
+        holder.binding.tvTitle.text = profile.title
+        holder.binding.tvPreview.text = profile.articlePreview.substring(0,100)
+        holder.binding.tvPublishDate.text = profile.publishingDate
+        holder.binding.tvSeeMore.text = profile.viewFullPost
+        
+        Picasso
+            .get()
+            .load(profile.articlePhoto)
+            .placeholder(R.drawable.pic)
+            .resize(400, 160)
+            .centerCrop()
+            .into(holder.binding.ivArticlePhoto)
 
     }
 
@@ -31,14 +42,5 @@ RecyclerView.Adapter<ProfilesViewHolder>(){
     }
 }
 
-class ProfilesViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
-    var tvAuthor = itemView.findViewById<TextView>(R.id.tvAuthor)
-    var tvTitle = itemView.findViewById<TextView>(R.id.tvTitle)
-    var tvPreview = itemView.findViewById<TextView>(R.id.tvPreview)
-    var tvSeeMore = itemView.findViewById<TextView>(R.id.tvSeeMore)
-    var tvPublish = itemView.findViewById<TextView>(R.id.tvPublishDate)
-
-
-
-
-}
+class ProfilesViewHolder(val binding : UserBlogBinding)
+    :RecyclerView.ViewHolder(binding.root)
